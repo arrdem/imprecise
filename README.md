@@ -1,13 +1,36 @@
 # me.arrdem.imprecise
 
-A Clojure library designed to ... well, that part is up to you.
+```clojure
+[me.arrdem.imprecise "0.1.0"]
+```
+
+Imprecise is a library which provides imprecise (toleranced) arithmetic
+operations for Clojure by defining new and extensible +, -, * and /
+functions.
 
 ## Usage
 
-FIXME
+```clojure
+user> (require ['me.arrdem.imprecise :as 'imp :refer ['+ '- '/ '*]])
+nil
+user> (+ 1 1 1)
+3
+user> (imp/e 1 0.1)
+#me.arrdem.imprecise.ENumber{:val 1, :tol 0.1}
+user> (+ 1 0.1 (imp/e 1 0.1))
+#me.arrdem.imprecise.ENumber{:val 2.1, :tol 0.1}
+user> (* 1 0.1 (imp/e 1 0.1))
+#me.arrdem.imprecise.ENumber{:val 0.1, :tol 0.010000000000000002}
+user> (/ 50 (imp/e 10 0.1))
+#me.arrdem.imprecise.ENumber{:val 5, :tol 5.0}
+```
+
+Be warned that this library was hacked in an evening by a college student and
+that no warranty or proof of correctness besides ballpark checks has been
+performed on this software. Please do verify the code before you use it in
+something critical, and please submit a pull request if you find errors.
 
 ## License
 
-Copyright © 2013 FIXME
-
+Copyright © 2013 Reid "arrdem" McKenzie
 Distributed under the Eclipse Public License, the same as Clojure.
