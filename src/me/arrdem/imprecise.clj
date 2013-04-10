@@ -36,9 +36,12 @@
 
 (defn e-div [x y]
  (ENumber. (clojure.core// (to-scalar x) (to-scalar y))
-            (clojure.core/+
-             (clojure.core/* (to-scalar x) (tolerance y))
-             (clojure.core/* (to-scalar y) (tolerance x)))))
+            (clojure.core//
+             (- (* (tolerance x) (+ (to-scalar y) (tolerance y)))
+                (* (tolerance y) (+ (to-scalar x) (tolerance x))))
+             (+ (* (to-scalar y) (to-scalar y))
+                (* 2 (to-scalar y) (tolerance y))
+                (* (tolerance y) (tolerance y))))))
 
 (defmacro multi-extend-type [types & rest]
   (doseq [t types]
