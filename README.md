@@ -26,9 +26,9 @@ user> (/ 50 (imp/e 10 0.1))
 ```
 
 Be warned that this library was hacked in an evening by a college student and
-that no warranty or proof of correctness besides ballpark checks has been
-performed on this software. Please do verify the code before you use it in
-something critical, and please submit a pull request if you find errors.
+that neither warranty nor proof of correctness  is provided for this software.
+Please do verify the code before you use it in something critical, and please
+submit a pull request if you find errors.
 
 ## License
 
