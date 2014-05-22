@@ -1,8 +1,7 @@
-# me.arrdem.imprecise
+# Imprecise
 
-```clojure
-[me.arrdem.imprecise "0.1.0"]
-```
+> 2 + 2 = 5 is in fact true for sufficiently large values of 2
+> – DeWayne E. Perry
 
 Imprecise is a library which provides imprecise (toleranced) arithmetic
 operations for Clojure by defining new and extensible +, -, * and /
@@ -11,7 +10,8 @@ functions.
 ## Usage
 
 ```clojure
-user> (require ['me.arrdem.imprecise :as 'imp :refer ['+ '- '/ '*]])
+user> (require '[imprecise]
+               '[clojure.algo.generic.arithmetic :refer :all])
 nil
 user> (+ 1 1 1)
 3
