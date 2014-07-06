@@ -1,4 +1,11 @@
 (ns imprecise.core
+  {:doc "Interval arithmetic for Clojure
+
+        This namespace provides an algo.generic based implementation
+        of arithmetic operations and comparisons on intervals as well
+        as helpers for working with intervals in the special case of
+        measurement tolerances."
+   :author "Reid McKenzie"}
   (:refer-clojure :exclude [- + / * min max])
   (:require [clojure.algo.generic
              [arithmetic :refer [+ - / *]]
@@ -34,15 +41,14 @@
                    (* μ μ %1))
                x₀ x₁)))))
 
-
   clojure.lang.IPersistentSet
-    (disjoin  [_ x] (assert false "Disjoin isn't supported or defined on Intervals."))
     (contains [_ x] (and (c/<= x x₁) (c/>= x x₀)))
     (get      [_ x] (if (contains? _ x) x nil))
 
-  (toString [_]
-    (format "{x|x∈[%s ... %s]}"
-            x₀ x₁)))
+  java.lang.Object
+    (toString [_]
+      (format "{x|x∈[%s ... %s]}"
+              x₀ x₁)))
 
 (defmethod print-method AInterval [o ^java.io.Writer w]
   (.write w (.toString o)))
@@ -153,6 +159,34 @@
 
 ;;--------------------------------------------------------------------
 
+(defmethod abs AInterval [x]
+  (->AInterval
+   (c/min 0 (min x))
+   (c/max 0 (max x))))
+
+(defmethod ceil AInterval [x]
+  (ceil (max x)))
+
+(defmethod floor AInterval [x]
+  (floor (min x)))
+
+(defmethod round AInterval [x]
+  (->AInterval
+   (round (min x))
+   (round (max x))))
+
+(defmethod pow [AInterval java.lang.Number] [x n]
+  (->AInterval
+   (pow (min x) n)
+   (pow (max x) n)))
+
+(defmethod sqrt AInterval [x]
+  (->AInterval
+   (sqrt (min x))
+   (sqrt (max x))))
+
+;;--------------------------------------------------------------------
+
 (defmethod c/pos? AInterval [x]
   (and (c/pos? (min x))
        (c/pos? (max x))))
@@ -162,8 +196,7 @@
        (contains? x 0)))
 
 (defmethod c/zero? AInterval [x]
-  (and (c/zero? (min x))
-       (c/zero? (max x))))
+  (contains? x 0))
 
 (defmethod c/= [AInterval AInterval] [x y]
   (and (c/= (max x) (max y))
@@ -176,9 +209,11 @@
   (c/< (max x) (min y)))
 
 (defmethod c/>= [AInterval AInterval] [x y]
-  (or (c/= x y)
-      (c/>= (min x) (max y))))
+  (and (contains? y (min x))
+       (contains? x (max y))
+       (c/>= (max x) (max y))))
 
 (defmethod c/<= [AInterval AInterval] [x y]
-  (or (c/= x y)
-      (c/<= (max x) (min y))))
+  (and (contains? x (min y))
+       (contains? y (max x))
+       (c/>= (max y) (max x))))
