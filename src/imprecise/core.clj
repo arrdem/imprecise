@@ -74,8 +74,8 @@
 
 (defn i-sub [x y]
   (->AInterval
-   (- (max x) (min y))
-   (- (max y) (min x))))
+   (- (max y) (min x))
+   (- (max x) (min y))))
 
 
 (defn i-mul [x y]
@@ -202,18 +202,16 @@
   (and (c/= (max x) (max y))
        (c/= (min x) (min y))))
 
-(defmethod c/> [AInterval AInterval] [x y]
-  (c/> (min x) (max y)))
-
 (defmethod c/< [AInterval AInterval] [x y]
   (c/< (max x) (min y)))
 
-(defmethod c/>= [AInterval AInterval] [x y]
-  (and (contains? y (min x))
-       (contains? x (max y))
-       (c/>= (max x) (max y))))
+(defmethod c/> [AInterval AInterval] [x y]
+  (c/> (min x) (max y)))
 
 (defmethod c/<= [AInterval AInterval] [x y]
-  (and (contains? x (min y))
-       (contains? y (max x))
-       (c/>= (max y) (max x))))
+  (and (c/<= (min x) (min y))
+       (c/<= (max x) (max y))))
+
+(defmethod c/>= [AInterval AInterval] [x y]
+  (and (c/>= (max x) (max y))
+       (c/>= (min x) (min y))))
