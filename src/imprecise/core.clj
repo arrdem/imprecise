@@ -14,10 +14,10 @@
 
 
 (defprotocol IInterval
-  (min   [_])
-  (max   [_])
-  (avg   [_])
-  (sigma [_]))
+  (min   [_] "The minimum value of an Interval.")
+  (max   [_] "The maximum value of an Interval.")
+  (avg   [_] "The average value of an Interval.")
+  (sigma [_] "The standard deviation of an Interval."))
 
 
 (defn- i [F x y]
@@ -55,6 +55,14 @@
 
 
 (defn e
+  "(λ Base → Err) → IInterval
+  (λ Base → +Err → -Err) → IInterval
+
+  In the two argument case, returns an Interval representing the
+  rage [Base-Err, Base+Err].
+
+  In the three argument case, returns an Interval representing the range
+  [Base + -Err, Base + +Err]."
   ([base err]
      (->AInterval
       (- base err)
@@ -203,10 +211,12 @@
        (c/= (min x) (min y))))
 
 (defmethod c/< [AInterval AInterval] [x y]
-  (c/< (max x) (min y)))
+  (and (c/<(min x) (min y))
+       (c/< (max x) (max y))))
 
 (defmethod c/> [AInterval AInterval] [x y]
-  (c/> (min x) (max y)))
+  (and (c/> (max x) (max y))
+       (c/> (min x) (min y))))
 
 (defmethod c/<= [AInterval AInterval] [x y]
   (and (c/<= (min x) (min y))
